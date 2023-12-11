@@ -1,0 +1,17 @@
+{
+    "name": "ld-web/su-php-mvc",
+    "description": "PHP MVC From Scratch for Sciences-U students",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Lucas Delobelle",
+            "email": "lucas@ld-web.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}
