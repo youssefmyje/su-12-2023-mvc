@@ -49,6 +49,10 @@ $router
         new Route('/products', 'products_list', 'GET', ProductController::class, 'list')
     );
 
+if (php_sapi_name() === 'cli') {
+    return;
+}
+
 [
     'REQUEST_URI'    => $uri,
     'REQUEST_METHOD' => $httpMethod
