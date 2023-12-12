@@ -7,7 +7,35 @@ use App\Controller\ProductController;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Routing\Route;
 use App\Routing\Router;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 
+// DATABASE CONNECTION
+$dbConfig = parse_ini_file(__DIR__ . '/../config/db.ini');
+
+if ($dbConfig === false) {
+    echo "Fichier de configuration de la base de données introuvable, créez un fichier db.ini dans config/ (voir README)";
+    exit;
+}
+
+$dbParams = [
+    'driver'   => $dbConfig['DB_DRIVER'],
+    'user'     => $dbConfig['DB_USER'],
+    'password' => $dbConfig['DB_PASSWORD'],
+    'dbname'   => $dbConfig['DB_NAME'],
+    'host'     => $dbConfig['DB_HOST'],
+    'port'     => $dbConfig['DB_PORT'],
+];
+
+$paths = [__DIR__ . '/../src/Entity'];
+$isDevMode = true;
+
+$config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+$connection = DriverManager::getConnection($dbParams, $config);
+$entityManager = new EntityManager($connection, $config);
+
+// ROUTER
 $router = new Router();
 
 $router

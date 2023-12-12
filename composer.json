@@ -19,5 +19,8 @@
             "App\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "doctrine/orm": "^2.17",
+        "symfony/cache": "^7.0"
+    }
 }
