@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-class IndexController
+class IndexController extends AbstractController
 {
     public function home(): string
     {
-        return "Accueil";
+        return $this->twig->render('index/home.html.twig');
     }
 
     public function contact(): string
     {
-        return "Contact";
+        return $this->twig->render('index/contact.html.twig');
     }
 }

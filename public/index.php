@@ -4,7 +4,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\IndexController;
 use App\Controller\ProductController;
-use App\Entity\User;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Routing\Route;
 use App\Routing\Router;
@@ -12,6 +11,8 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Symfony\Component\Dotenv\Dotenv;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 if (
     php_sapi_name() !== 'cli' && // Environnement d'exécution != console
@@ -20,7 +21,7 @@ if (
     return false;
 }
 
-// DATABASE CONNECTION
+// --- DATABASE CONNECTION ----------------------------------
 $dotenv = new Dotenv();
 $dotenv->loadEnv(__DIR__ . '/../.env');
 
@@ -40,16 +41,28 @@ $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 $connection = DriverManager::getConnection($dbParams, $config);
 $entityManager = new EntityManager($connection, $config);
 
-$user = new User();
-$user
-    ->setEmail("haf@teci.gw")
-    ->setPassword(password_hash("test", PASSWORD_BCRYPT));
+// $user = new User();
+// $user
+//     ->setEmail("haf@teci.gw")
+//     ->setPassword(password_hash("test", PASSWORD_BCRYPT));
 
-$entityManager->persist($user);
-$entityManager->flush();
+// $entityManager->persist($user);
+// $entityManager->flush();
+// -----------------------------------------------------------
 
-// ROUTER
-$router = new Router();
+// --- TWIG --------------------------------------------------
+$loader = new FilesystemLoader(__DIR__ . '/../templates');
+$twig = new Environment(
+    $loader,
+    [
+        'cache' => __DIR__ . '/../var/cache',
+        'debug' => $_ENV['APP_ENV'] === 'dev'
+    ]
+);
+// -----------------------------------------------------------
+
+// --- ROUTER ------------------------------------------------
+$router = new Router($twig);
 
 $router
     ->addRoute(
@@ -61,6 +74,7 @@ $router
     ->addRoute(
         new Route('/products', 'products_list', 'GET', ProductController::class, 'list')
     );
+// -----------------------------------------------------------
 
 if (php_sapi_name() === 'cli') {
     return;
@@ -76,7 +90,7 @@ try {
 } catch (RouteNotFoundException) {
     http_response_code(404);
     echo "Page non trouvée";
-} catch (Exception) {
+} catch (Exception $e) {
     http_response_code(500);
     echo "Erreur interne, veuillez contacter l'administrateur";
 }

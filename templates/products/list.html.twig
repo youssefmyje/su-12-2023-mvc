@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Nos produits - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+  <h1>Liste des produits</h1>
+
+  <h2>Sorties récentes</h2>
+
+  <p>{{ product.name }}</p>
+  <p>{{ product.format() }}</p>
+{% endblock %}

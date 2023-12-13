@@ -3,11 +3,17 @@
 namespace App\Routing;
 
 use App\Routing\Exception\RouteNotFoundException;
+use Twig\Environment;
 
 class Router
 {
     /** @var Route[] */
     private array $routes = [];
+
+    public function __construct(
+        private Environment $twig
+    ) {
+    }
 
     public function addRoute(Route $route): self
     {
@@ -45,7 +51,7 @@ class Router
 
         $controllerClass = $route->getControllerClass();
         $method = $route->getController();
-        $controllerInstance = new $controllerClass();
+        $controllerInstance = new $controllerClass($this->twig);
         return $controllerInstance->$method();
     }
 }
