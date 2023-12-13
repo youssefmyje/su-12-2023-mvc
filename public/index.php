@@ -4,12 +4,20 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\IndexController;
 use App\Controller\ProductController;
+use App\Entity\User;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Routing\Route;
 use App\Routing\Router;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
+
+if (
+    php_sapi_name() !== 'cli' && // Environnement d'exécution != console
+    preg_match('/\.(ico|png|jpg|jpeg|css|js|gif)$/', $_SERVER['REQUEST_URI'])
+) {
+    return false;
+}
 
 // DATABASE CONNECTION
 $dbConfig = parse_ini_file(__DIR__ . '/../config/db.ini');
@@ -34,6 +42,14 @@ $isDevMode = true;
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 $connection = DriverManager::getConnection($dbParams, $config);
 $entityManager = new EntityManager($connection, $config);
+
+$user = new User();
+$user
+    ->setEmail("haf@teci.gw")
+    ->setPassword(password_hash("test", PASSWORD_BCRYPT));
+
+$entityManager->persist($user);
+$entityManager->flush();
 
 // ROUTER
 $router = new Router();
