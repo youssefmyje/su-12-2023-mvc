@@ -11,6 +11,7 @@ use App\Routing\Router;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
+use Symfony\Component\Dotenv\Dotenv;
 
 if (
     php_sapi_name() !== 'cli' && // Environnement d'exécution != console
@@ -20,24 +21,20 @@ if (
 }
 
 // DATABASE CONNECTION
-$dbConfig = parse_ini_file(__DIR__ . '/../config/db.ini');
-
-if ($dbConfig === false) {
-    echo "Fichier de configuration de la base de données introuvable, créez un fichier db.ini dans config/ (voir README)";
-    exit;
-}
+$dotenv = new Dotenv();
+$dotenv->loadEnv(__DIR__ . '/../.env');
 
 $dbParams = [
-    'driver'   => $dbConfig['DB_DRIVER'],
-    'user'     => $dbConfig['DB_USER'],
-    'password' => $dbConfig['DB_PASSWORD'],
-    'dbname'   => $dbConfig['DB_NAME'],
-    'host'     => $dbConfig['DB_HOST'],
-    'port'     => $dbConfig['DB_PORT'],
+    'driver'   => $_ENV['DB_DRIVER'],
+    'user'     => $_ENV['DB_USER'],
+    'password' => $_ENV['DB_PASSWORD'],
+    'dbname'   => $_ENV['DB_NAME'],
+    'host'     => $_ENV['DB_HOST'],
+    'port'     => $_ENV['DB_PORT'],
 ];
 
 $paths = [__DIR__ . '/../src/Entity'];
-$isDevMode = true;
+$isDevMode = $_ENV['APP_ENV'] === 'dev';
 
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 $connection = DriverManager::getConnection($dbParams, $config);
