@@ -9,6 +9,9 @@
 
   <h2>Sorties récentes</h2>
 
-  <p>{{ product.name }}</p>
-  <p>{{ product.format() }}</p>
+  {% for product in products %}
+    <p>{{ product.format() }}</p>
+  {% else %}
+    <p>Aucun produit enregistré</p>
+  {% endfor %}
 {% endblock %}

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\IndexController;
 use App\Controller\ProductController;
+use App\Repository\ProductRepository;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Routing\Route;
 use App\Routing\Router;
@@ -41,13 +42,7 @@ $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 $connection = DriverManager::getConnection($dbParams, $config);
 $entityManager = new EntityManager($connection, $config);
 
-// $user = new User();
-// $user
-//     ->setEmail("haf@teci.gw")
-//     ->setPassword(password_hash("test", PASSWORD_BCRYPT));
-
-// $entityManager->persist($user);
-// $entityManager->flush();
+$productRepository = new ProductRepository($entityManager);
 // -----------------------------------------------------------
 
 // --- TWIG --------------------------------------------------
@@ -64,7 +59,8 @@ $twig = new Environment(
 // --- SERVICES ----------------------------------------------
 $services = [
     Environment::class => $twig,
-    EntityManager::class => $entityManager
+    EntityManager::class => $entityManager,
+    ProductRepository::class => $productRepository
 ];
 // -----------------------------------------------------------
 
@@ -79,7 +75,10 @@ $router
         new Route('/contact', 'contact', 'GET', IndexController::class, 'contact')
     )
     ->addRoute(
-        new Route('/products', 'products_list', 'GET', ProductController::class, 'list')
+        new Route('/products/new', 'products_new', 'GET', ProductController::class, 'new')
+    )
+    ->addRoute(
+        new Route('/products/list', 'products_list', 'GET', ProductController::class, 'list')
     );
 // -----------------------------------------------------------
 
