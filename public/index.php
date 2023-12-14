@@ -61,8 +61,15 @@ $twig = new Environment(
 );
 // -----------------------------------------------------------
 
+// --- SERVICES ----------------------------------------------
+$services = [
+    Environment::class => $twig,
+    EntityManager::class => $entityManager
+];
+// -----------------------------------------------------------
+
 // --- ROUTER ------------------------------------------------
-$router = new Router($twig);
+$router = new Router($services);
 
 $router
     ->addRoute(

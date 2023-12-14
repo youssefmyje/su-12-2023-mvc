@@ -3,7 +3,6 @@
 namespace App\Routing;
 
 use App\Routing\Exception\RouteNotFoundException;
-use Twig\Environment;
 
 class Router
 {
@@ -11,7 +10,7 @@ class Router
     private array $routes = [];
 
     public function __construct(
-        private Environment $twig
+        private array $services = []
     ) {
     }
 
@@ -49,9 +48,31 @@ class Router
             throw new RouteNotFoundException();
         }
 
+        // Constructeur
         $controllerClass = $route->getControllerClass();
+        $constructorParams = $this->getMethodParams($controllerClass . '::__construct');
+        $controllerInstance = new $controllerClass(...$constructorParams);
+
+        // Contrôleur
         $method = $route->getController();
-        $controllerInstance = new $controllerClass($this->twig);
-        return $controllerInstance->$method();
+        $controllerParams = $this->getMethodParams($controllerClass . '::' . $method);
+        return $controllerInstance->$method(...$controllerParams);
+    }
+
+    private function getMethodParams(string $method): array
+    {
+        $methodInfos = new \ReflectionMethod($method);
+        $methodParameters = $methodInfos->getParameters();
+
+        $params = [];
+        foreach ($methodParameters as $param) {
+            $paramType = $param->getType();
+            $paramTypeFQCN = $paramType->getName();
+            if (array_key_exists($paramTypeFQCN, $this->services)) {
+                $params[] = $this->services[$paramTypeFQCN];
+            }
+        }
+
+        return $params;
     }
 }
