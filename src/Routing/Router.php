@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use App\Routing\Exception\RouteNotFoundException;
+use Psr\Container\ContainerInterface;
 
 class Router
 {
@@ -10,7 +11,7 @@ class Router
     private array $routes = [];
 
     public function __construct(
-        private array $services = []
+        private ContainerInterface $container
     ) {
     }
 
@@ -68,9 +69,7 @@ class Router
         foreach ($methodParameters as $param) {
             $paramType = $param->getType();
             $paramTypeFQCN = $paramType->getName();
-            if (array_key_exists($paramTypeFQCN, $this->services)) {
-                $params[] = $this->services[$paramTypeFQCN];
-            }
+            $params[] = $this->container->get($paramTypeFQCN);
         }
 
         return $params;

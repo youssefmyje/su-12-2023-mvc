@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\IndexController;
 use App\Controller\ProductController;
+use App\DependencyInjection\Container;
 use App\Repository\ProductRepository;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Routing\Route;
@@ -56,16 +57,17 @@ $twig = new Environment(
 );
 // -----------------------------------------------------------
 
-// --- SERVICES ----------------------------------------------
-$services = [
-    Environment::class => $twig,
-    EntityManager::class => $entityManager,
-    ProductRepository::class => $productRepository
-];
+// --- SERVICE CONTAINER -------------------------------------
+$container = new Container();
+
+$container
+    ->set(Environment::class, $twig)
+    ->set(EntityManager::class, $entityManager)
+    ->set(ProductRepository::class, $productRepository);
 // -----------------------------------------------------------
 
 // --- ROUTER ------------------------------------------------
-$router = new Router($services);
+$router = new Router($container);
 
 $router
     ->addRoute(
