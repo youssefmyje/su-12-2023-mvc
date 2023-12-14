@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\IndexController;
+use App\Controller\NewsletterController;
 use App\Controller\ProductController;
 use App\DependencyInjection\Container;
 use App\Repository\ProductRepository;
@@ -81,6 +82,15 @@ $router
     )
     ->addRoute(
         new Route('/products/list', 'products_list', 'GET', ProductController::class, 'list')
+    )
+    ->addRoute(
+        new Route('/newsletter/subscribe', 'newsletter_subscribe', 'GET', NewsletterController::class, 'subscribe')
+    )
+    ->addRoute(
+        new Route('/newsletter/register', 'newsletter_register', 'POST', NewsletterController::class, 'register')
+    )
+    ->addRoute(
+        new Route('/newsletter/confirm', 'newsletter_confirm', 'GET', NewsletterController::class, 'confirm')
     );
 // -----------------------------------------------------------
 
