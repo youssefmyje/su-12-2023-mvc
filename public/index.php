@@ -69,29 +69,7 @@ $container
 
 // --- ROUTER ------------------------------------------------
 $router = new Router($container);
-
-$router
-    ->addRoute(
-        new Route('/', 'home', 'GET', IndexController::class, 'home')
-    )
-    ->addRoute(
-        new Route('/contact', 'contact', 'GET', IndexController::class, 'contact')
-    )
-    ->addRoute(
-        new Route('/products/new', 'products_new', 'GET', ProductController::class, 'new')
-    )
-    ->addRoute(
-        new Route('/products/list', 'products_list', 'GET', ProductController::class, 'list')
-    )
-    ->addRoute(
-        new Route('/newsletter/subscribe', 'newsletter_subscribe', 'GET', NewsletterController::class, 'subscribe')
-    )
-    ->addRoute(
-        new Route('/newsletter/register', 'newsletter_register', 'POST', NewsletterController::class, 'register')
-    )
-    ->addRoute(
-        new Route('/newsletter/confirm', 'newsletter_confirm', 'GET', NewsletterController::class, 'confirm')
-    );
+$router->registerRoutes();
 // -----------------------------------------------------------
 
 if (php_sapi_name() === 'cli') {
