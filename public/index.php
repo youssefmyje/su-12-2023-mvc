@@ -65,6 +65,8 @@ $container
     ->set(Environment::class, $twig)
     ->set(EntityManager::class, $entityManager)
     ->set(ProductRepository::class, $productRepository);
+$container
+    ->set(App\Utils\SessionManager::class, new App\Utils\SessionManager());
 // -----------------------------------------------------------
 
 // --- ROUTER ------------------------------------------------
@@ -88,5 +90,10 @@ try {
     echo "Page non trouvée";
 } catch (Exception $e) {
     http_response_code(500);
-    echo "Erreur interne, veuillez contacter l'administrateur";
+    echo "Erreur interne : " . $e->getMessage();
 }
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);

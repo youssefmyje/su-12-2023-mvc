@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use App\Routing\Attribute\Route as RouteAttribute;
+use App\Utils\SessionManager;
 use App\Routing\Exception\RouteNotFoundException;
 use App\Utils\Filesystem;
 use Psr\Container\ContainerInterface;

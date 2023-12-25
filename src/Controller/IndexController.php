@@ -7,7 +7,13 @@ use Doctrine\ORM\EntityManager;
 
 class IndexController extends AbstractController
 {
-    #[Route('/', 'home')]
+    #[Route('/', 'login')]
+    public function login(): string
+    {
+        return $this->twig->render('login.html.twig');
+    }
+
+    #[Route('/home', 'home')]
     public function home(): string
     {
         return $this->twig->render('index/home.html.twig');
