@@ -30,7 +30,7 @@ class AuthController extends AbstractController
             if ($user) {
                 $this->sessionManager->startSession();
                 $_SESSION['user'] = $user;
-                return $this->redirect('index/home.html.twig');
+                return $this->redirect('/home');
             } else {
                 return $this->render('login.html.twig', ['error' => 'Identifiants incorrects']);
             }
